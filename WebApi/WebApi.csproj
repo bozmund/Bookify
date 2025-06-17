@@ -12,10 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="CsvHelper" Version="33.1.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.16" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.16">
@@ -23,6 +19,10 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.16" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Client\Client.csproj" />
     </ItemGroup>
 
 </Project>

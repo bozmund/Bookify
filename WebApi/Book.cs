@@ -1,4 +1,6 @@
-﻿public class Book
+﻿using BlazorApp.Models;
+
+public class Book
 {
     public int id { get; set; }
     public string book_id { get; set; }
@@ -23,4 +25,34 @@
     public int ratings_5 { get; set; }
     public string image_url { get; set; }
     public string small_image_url { get; set; }
+
+    public BookDto MapDto()
+    {
+        return new BookDto
+        {
+            Id = id,
+            BookId = book_id,
+            BestBookId = best_book_id,
+            WorkId = work_id,
+            BooksCount = books_count,
+            Isbn = isbn,
+            Isbn13 = isbn13,
+            Authors = authors,
+            OriginalPublicationYear = original_publication_year,
+            OriginalTitle = original_title,
+            Title = title,
+            LanguageCode = language_code,
+            AverageRating = average_rating,
+            RatingsCount = ratings_count,
+            WorkRatingsCount = work_ratings_count,
+            WorkTextReviewsCount = work_text_reviews_count,
+            Ratings1 = ratings_1,
+            Ratings2 = ratings_2,
+            Ratings3 = ratings_3,
+            Ratings4 = ratings_4,
+            Ratings5 = ratings_5,
+            ImageUrl = image_url,
+            SmallImageUrl = small_image_url
+        };
+    }
 }

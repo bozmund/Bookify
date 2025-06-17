@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 services.AddControllers();
 services.AddDbContext<BookDbContext>(options => options.UseSqlite("Data Source=Books.db"));
-
+services.AddCors(x => x.AddPolicy("AllowAll", policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()));
 var app = builder.Build();
 
 
@@ -28,7 +28,7 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 }
-
+app.UseCors("AllowAll");
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
