@@ -7,4 +7,6 @@ public interface IBookClient
 {
     [Get("/api/book")]
     Task<List<BookDto>> GetBookByNameAsync([Query] string name);
+    [Delete("/api/book")]
+    Task DeleteBookAsync([Query] int id);
 }

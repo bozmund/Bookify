@@ -7,3 +7,5 @@ riderModule.iml
 WebApi/books.csv
 WebApi/Books.db
 Bookify.sln.DotSettings.user
+WebApi/Books.db-shm
+WebApi/Books.db-wal

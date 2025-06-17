@@ -6,7 +6,7 @@ namespace BlazorApp.Pages;
 
 public class HomeBase : ComponentBase
 {
-    [Inject] private IBookClient Client { get; set; } = null!;
+    [Inject] protected IBookClient Client { get; set; } = null!;
     protected string NameOfTheBook { get; set; } = "Harry Potter";
     protected List<BookDto> Books { get; set; } = [];
     protected async Task SearchBook()

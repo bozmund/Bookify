@@ -25,6 +25,7 @@ public class Book
     public int ratings_5 { get; set; }
     public string image_url { get; set; }
     public string small_image_url { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
     public BookDto MapDto()
     {
