@@ -4,3 +4,23 @@ GET {{WebApi_HostAddress}}/api/Book/?name=Harry
 Accept: application/json
 
 ###
+
+POST http://127.0.0.1:5000/recommend
+Content-Type: application/json
+
+{
+  "book_id": "1"
+}
+
+###
+POST {{WebApi_HostAddress}}/api/Book/books
+Content-Type: application/json
+Accept: application/json
+
+[
+  1,
+  2,
+  3
+]
+
+

@@ -10,7 +10,7 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchBook">Search</MudButton>
     </MudItem>
 </MudGrid>
-@if(Books.Count > 0)
+@if (Books.Count > 0)
 {
     <MudTable Items="@Books" Hover="true" Striped="true" Dense="true">
         <HeaderContent>
@@ -20,20 +20,22 @@
             <MudTh>Published Date</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Picture">
-                <img src="@context.ImageUrl" alt="Book cover" style="max-width:60px;max-height:80px;" />
-            </MudTd>
-            <MudTd DataLabel="Title">@context.OriginalTitle</MudTd>
-            <MudTd DataLabel="Author">@context.Authors</MudTd>
-            <MudTd DataLabel="Published Date">@context.OriginalPublicationYear.ToString()</MudTd>
-            <MudTd DataLabel="Delete">
-                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() =>
-                                                                                                {
-                                                                                                    Books.Remove(context);
-                                                                                                    StateHasChanged();
-                                                                                                    return Client.DeleteBookAsync(context.Id);
-                                                                                                })" />
-            </MudTd>
+            <MudTr Style="cursor:pointer" @onclick="@(() => NavigateToBook(context.Id))">
+                <MudTd DataLabel="Picture">
+                    <MudImage Src="@context.ImageUrl" Alt="Book cover" Style="max-width:60px;max-height:80px;"/>
+                </MudTd>
+                <MudTd DataLabel="Title">@context.OriginalTitle</MudTd>
+                <MudTd DataLabel="Author">@context.Authors</MudTd>
+                <MudTd DataLabel="Published Date">@context.OriginalPublicationYear.ToString()</MudTd>
+                <MudTd DataLabel="Delete">
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() =>
+                                                                                                    {
+                                                                                                        Books.Remove(context);
+                                                                                                        StateHasChanged();
+                                                                                                        return Client.DeleteBookAsync(context.Id);
+                                                                                                    })"/>
+                </MudTd>
+            </MudTr>
         </RowTemplate>
     </MudTable>
 }

@@ -40,4 +40,22 @@ public class BookController(BookDbContext context) : ControllerBase
         
         return NoContent();
     }
+    
+    [HttpPost("books")]
+    public async Task<ActionResult<List<BookDto>>> GetBookById([FromBody]List<int> recommendedBookIds)
+    {
+        if (recommendedBookIds.Count == 0)
+            return BadRequest("Recommended book IDs are required.");
+
+        var books = await context.Books
+            .AsNoTracking()
+            .Where(b => recommendedBookIds.Contains(b.id) && b.IsDeleted != true)
+            .Select(b => b.MapDto())
+            .ToListAsync();
+
+        if (books.Count == 0)
+            return NotFound("No books found for the provided IDs.");
+
+        return Ok(books);
+    }
 }

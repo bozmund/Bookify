@@ -9,4 +9,6 @@ public interface IBookClient
     Task<List<BookDto>> GetBookByNameAsync([Query] string name);
     [Delete("/api/book")]
     Task DeleteBookAsync([Query] int id);
+    [Post("/api/book/books")]
+    Task<List<BookDto>> GetBooksByIdAsync([Body]List<int> recommendedBookIds);
 }
