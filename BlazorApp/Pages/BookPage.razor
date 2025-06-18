@@ -1,27 +1,38 @@
 ﻿@page "/book/{Id:int}"
 
-@if (MainBook != null)
+@if (!IsLoading)
 {
-    <MudPaper Class="main-book-details" Elevation="4" Style="padding:24px; margin-bottom:32px;">
-        <MudText Typo="Typo.h4">@MainBook.Title</MudText>
-        <MudImage Src="@MainBook.ImageUrl" Alt="@MainBook.Title" Width="200" Style="margin:16px 0;"/>
-        <MudText Typo="Typo.subtitle1">Author: @MainBook.Authors.Split(",").First()</MudText>
-    </MudPaper>
+    @if (MainBook != null)
+    {
+        <MudPaper Class="main-book-details" Elevation="4" Style="padding:24px; margin-bottom:32px;">
+            <MudText Typo="Typo.h4">@MainBook.Title</MudText>
+            <MudImage Src="@MainBook.ImageUrl" Alt="@MainBook.Title" Width="200" Style="margin:16px 0;"/>
+            <MudText Typo="Typo.subtitle1">Author: @MainBook.Authors.Split(",").First()</MudText>
+        </MudPaper>
+    }
+    @if (RecommendedBooks.Count > 0)
+    {
+        <MudText Typo="Typo.h6" GutterBottom="true">Related Books</MudText>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; padding-bottom: 8px;">
+            @foreach (var book in RecommendedBooks)
+            {
+                <MudCard Style="width:220px; height:320px;">
+                    <MudCardMedia Image="@book.ImageUrl" Height="180"/>
+                    <MudCardContent>
+                        <MudText Typo="Typo.subtitle2">@book.Title</MudText>
+                        <MudText Typo="Typo.body2">@book.Authors.Split(",").First()</MudText>
+                    </MudCardContent>
+                </MudCard>
+            }
+        </div>
+    }else
+    {
+        <MudText Typo="Typo.body2">No related books found.</MudText>
+    }
+}
+else
+{
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Style="margin: 20px auto; display: block;" />
 }
 
-@if (Books.Count > 0)
-{
-    <MudText Typo="Typo.h6" GutterBottom="true">Related Books</MudText>
-    <div style="display: flex; flex-wrap: wrap; gap: 16px; padding-bottom: 8px;">
-        @foreach (var book in Books)
-        {
-            <MudCard Style="width:220px; height:320px;">
-                <MudCardMedia Image="@book.ImageUrl" Height="180"/>
-                <MudCardContent>
-                    <MudText Typo="Typo.subtitle2">@book.Title</MudText>
-                    <MudText Typo="Typo.body2">@book.Authors.Split(",").First()</MudText>
-                </MudCardContent>
-            </MudCard>
-        }
-    </div>
-}
+

@@ -16,33 +16,39 @@ public partial class BookPage : ComponentBase
     };
 
     private List<int> _recommendedBookIds = [];
-    protected List<BookDto> Books = [];
+    protected List<BookDto> RecommendedBooks = [];
     protected BookDto? MainBook { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
         var byIdAsync = await BookClient.GetBooksByIdAsync([Id]);
         MainBook = byIdAsync.First();
         var json = JsonSerializer.Serialize(new { book_id = Id });
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        var httpResponseMessage = await HttpClient.PostAsync("recommend", content);
-        if (httpResponseMessage.IsSuccessStatusCode)
+        try
         {
-            var responseJson = await httpResponseMessage.Content.ReadFromJsonAsync<JsonElement>();
-            _recommendedBookIds = responseJson
-                .GetProperty("recommendations")
-                .EnumerateArray()
-                .Select(rec => rec.GetProperty("book_id").GetInt32())
-                .ToList();
+            var httpResponseMessage = await HttpClient.PostAsync("recommend", content);
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                var responseJson = await httpResponseMessage.Content.ReadFromJsonAsync<JsonElement>();
+                _recommendedBookIds = responseJson
+                    .GetProperty("recommendations")
+                    .EnumerateArray()
+                    .Select(rec => rec.GetProperty("book_id").GetInt32())
+                    .ToList();
 
-            Books = await BookClient.GetBooksByIdAsync(_recommendedBookIds);
+                RecommendedBooks = await BookClient.GetBooksByIdAsync(_recommendedBookIds);
+            }
+            //do nothing, no recommendations;
         }
-        else
+        catch (Exception)
         {
-            Console.WriteLine(
-                $"Failed to fetch recommendations for book {Id}. Status code: {httpResponseMessage.StatusCode}");
-        }
+            // Handle or log the exception as needed
+        } //do nothing, no recommendations;
+        IsLoading = false;
     }
 
     [Inject] private IBookClient BookClient { get; set; }
+    public bool IsLoading { get; set; }
 }
