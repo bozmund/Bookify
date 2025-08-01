@@ -23,4 +23,11 @@ Accept: application/json
   3
 ]
 
+###
+POST {{WebApi_HostAddress}}/api/v1/register
+Content-Type: application/json
 
+{
+  "email": "testuser@gmail.com",
+  "password": "testpass"
+}

@@ -1,4 +1,4 @@
-﻿using BlazorApp.Models;
+﻿using Client.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;

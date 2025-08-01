@@ -1,0 +1,46 @@
+﻿@page "/"
+@using Client.Models.Response
+@inherits HomeBase
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="6" md="4">
+        <MudTextField @bind-Value="NameOfTheBook" AutoFocus="true" Variant="Variant.Outlined" T="string"
+                      Placeholder="Type any name and hit enter"/>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(SearchBook)">Search</MudButton>
+    </MudItem>
+</MudGrid>
+@if (RecommendedBooks.Count > 0)
+{
+    <MudTable RowClass="cursor-pointer" T="BookDto" Items="@RecommendedBooks"
+              OnRowClick="@(args => NavigateToBook(args.Item!.Id))" Hover="true" Striped="true"
+              Dense="true">
+        <HeaderContent>
+            <MudTh>Picture</MudTh>
+            <MudTh>Title</MudTh>
+            <MudTh>Author</MudTh>
+            <MudTh>Published Date</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Picture">
+                <MudImage Src="@context.ImageUrl" Alt="Book cover" Style="max-width:60px;max-height:80px;"/>
+            </MudTd>
+            <MudTd DataLabel="Title">@context.OriginalTitle</MudTd>
+            <MudTd DataLabel="Author">@context.Authors</MudTd>
+            <MudTd DataLabel="Published Date">@context.OriginalPublicationYear.ToString()</MudTd>
+            <MudTd DataLabel="Delete">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() =>
+                                                                                                {
+                                                                                                    RecommendedBooks.Remove(context);
+                                                                                                    StateHasChanged();
+                                                                                                    return Client.DeleteBookAsync(context.Id);
+                                                                                                })"/>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+else
+{
+    <p>No books found.</p>
+}

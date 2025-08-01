@@ -1,0 +1,74 @@
+﻿@page "/book/{Id:int}"
+
+@if (!IsLoading)
+{
+    @if (MainBook != null)
+    {
+        <MudPaper Class="main-book-details" Elevation="4" Style="padding:24px; margin-bottom:32px;">
+            <MudText Typo="Typo.h4">@MainBook.Title</MudText>
+            <MudImage Src="@MainBook.ImageUrl" Alt="@MainBook.Title" Width="200" Style="margin:16px 0;"/>
+            <MudText Typo="Typo.subtitle1">Author: @MainBook.Authors.Split(",").First()</MudText>
+        </MudPaper>
+        <AuthorizeView>
+            <Authorized>
+                <MudTextField @bind-Value="CommentText" Label="Add a comment" Variant="Variant.Outlined"
+                              Margin="Margin.Dense" Style="width: 100%;"/>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(PostCommentAsync)">Post Comment
+                </MudButton>
+            </Authorized>
+            <NotAuthorized>
+                <MudTextField T="string" Label="Add a comment" Variant="Variant.Outlined" Margin="Margin.Dense"
+                              Style="width: 100%;" Disabled="true"/>
+                <MudText Typo="Typo.caption" Style="color: red;">Please log in to add comments.</MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/Account/Login"
+                           Style="margin-top: 8px;">
+                    Log In
+                </MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
+        if (Comments.Count > 0)
+        {
+            <MudText Typo="Typo.h6" GutterBottom="true">Comments</MudText>
+            <div style="margin-bottom: 16px;">
+                @foreach (var comment in Comments)
+                {
+                    <MudPaper Class="comment" Elevation="1" Style="padding:16px; margin-bottom:8px;">
+                        <MudText Typo="Typo.body1">@comment.Text</MudText>
+                        <MudText Typo="Typo.caption" Style="color: gray;">- @comment.UserName</MudText>
+                    </MudPaper>
+                }
+            </div>
+        }
+        else
+        {
+            <MudText Typo="Typo.body2">No comments available.</MudText>
+        }
+    }
+
+    @if (RecommendedBooks.Count > 0)
+    {
+        <MudText Typo="Typo.h6" GutterBottom="true">Related Books</MudText>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; padding-bottom: 8px;">
+            @foreach (var book in RecommendedBooks)
+            {
+                <MudCard Style="width:220px; height:320px;">
+                    <MudCardMedia Image="@book.ImageUrl" Height="180"/>
+                    <MudCardContent>
+                        <MudText Typo="Typo.subtitle2">@book.Title</MudText>
+                        <MudText Typo="Typo.body2">@book.Authors.Split(",").First()</MudText>
+                    </MudCardContent>
+                </MudCard>
+            }
+        </div>
+    }
+    else
+    {
+        <MudText Typo="Typo.body2">No related books found.</MudText>
+    }
+}
+else
+{
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Style="margin: 20px auto; display: block;"/>
+}
+
+

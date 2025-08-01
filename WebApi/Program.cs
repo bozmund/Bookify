@@ -1,7 +1,11 @@
 using System.Globalization;
+using System.Security.Claims;
+using Client.Models.Response;
 using CsvHelper;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
+using WebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +14,29 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 services.AddControllers();
 services.AddDbContext<BookDbContext>(options => options.UseSqlite("Data Source=Books.db"));
-services.AddCors(x => x.AddPolicy("AllowAll", policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()));
+services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+
+services.AddCors(x =>
+    x.AddPolicy("AllowAll", policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()));
 var app = builder.Build();
+var commentsGroup = app.MapGroup("/api/comments");
+commentsGroup.MapGet("/{bookId:int}", async (int bookId, BookDbContext db) =>
+{
+    var comments = await db.Comments
+        .Where(c => c.BookId == bookId)
+        .OrderByDescending(c => c.CreatedAt)
+        .ToListAsync();
+    return comments.Count == 0 ? Results.NotFound("No comments found for this book.") : Results.Ok(comments.Select(x => new CommentDto(x.UserName, x.Text, x.CreatedAt)));
+});
+
+commentsGroup.MapPost("/book", async (Comment comment, BookDbContext db) =>
+{
+    comment.CreatedAt = DateTime.UtcNow;
+    db.Comments.Add(comment);
+    await db.SaveChangesAsync();
+    return Results.Ok(comment);
+});
 
 
 using (var scope = app.Services.CreateScope())
@@ -28,13 +53,13 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 }
+
 app.UseCors("AllowAll");
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

@@ -1,4 +1,4 @@
-﻿using BlazorApp.Models;
+﻿using Client.Models.Response;
 using Refit;
 
 namespace Client;
