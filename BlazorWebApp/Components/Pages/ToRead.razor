@@ -1,0 +1,62 @@
+@page "/toread"
+@using Client
+@using Client.Models.Response
+@using Client.Models.Values
+
+<AuthorizeView>
+    <Authorized>
+        @if (_readBooks.Count == 0)
+        {
+            <MudText>No books read yet.</MudText>
+        }
+        else
+        {
+            <MudGrid>
+
+                @foreach (var book in _readBooks)
+                {
+                    <MudItem xs="12" sm="6" md="4" lg="3">
+                        <MudCard @onclick="@(() => NavigateToBook(book.Id))">
+                            <MudCardMedia Image="@book.ImageUrl" Height="180"/>
+                            <MudCardContent>
+                                <MudText Typo="Typo.subtitle2">@book.Title</MudText>
+                                <MudText Typo="Typo.body2">@book.Authors.Split(",").First()</MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <MudText>You are not authorized to view this content.</MudText>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Inject] private IBookClient Client { get; set; } = null!;
+    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    private string? _currentUser;
+
+
+    private List<BookDto> _readBooks = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _currentUser = authState.User.Identity?.Name;
+        if (string.IsNullOrEmpty(_currentUser))
+        {
+            throw new InvalidOperationException("User is not authenticated.");
+        }
+
+        var likedBooksAsync = await Client.GetLikedBooksAsync(_currentUser, LikedType.ToRead);
+        if (likedBooksAsync.IsSuccessful) _readBooks = likedBooksAsync.Content;
+    }
+
+    protected void NavigateToBook(int bookId)
+    {
+        NavigationManager.NavigateTo($"/book/{bookId}");
+    }
+}

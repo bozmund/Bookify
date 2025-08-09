@@ -12,7 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var services = builder.Services;
-services.AddControllers();
+services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null; // Preserve property names as they are
+    options.JsonSerializerOptions.DictionaryKeyPolicy = null; // Preserve dictionary keys as they are
+});
 services.AddDbContext<BookDbContext>(options => options.UseSqlite("Data Source=Books.db"));
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);

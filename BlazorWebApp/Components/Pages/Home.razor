@@ -11,9 +11,9 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(SearchBook)">Search</MudButton>
     </MudItem>
 </MudGrid>
-@if (RecommendedBooks.Count > 0)
+@if (Books.Count > 0)
 {
-    <MudTable RowClass="cursor-pointer" T="BookDto" Items="@RecommendedBooks"
+    <MudTable RowClass="cursor-pointer" T="BookDto" Items="@Books"
               OnRowClick="@(args => NavigateToBook(args.Item!.Id))" Hover="true" Striped="true"
               Dense="true">
         <HeaderContent>
@@ -32,7 +32,7 @@
             <MudTd DataLabel="Delete">
                 <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() =>
                                                                                                 {
-                                                                                                    RecommendedBooks.Remove(context);
+                                                                                                    Books.Remove(context);
                                                                                                     StateHasChanged();
                                                                                                     return Client.DeleteBookAsync(context.Id);
                                                                                                 })"/>

@@ -11,10 +11,16 @@
         </MudPaper>
         <AuthorizeView>
             <Authorized>
+                
+                <MudRating SelectedValueChanged="Rate" SelectedValue="UserRating" MaxValue="5" Size="Size.Large" Color="Color.Primary" Style="margin-bottom: 16px;" />
                 <MudTextField @bind-Value="CommentText" Label="Add a comment" Variant="Variant.Outlined"
                               Margin="Margin.Dense" Style="width: 100%;"/>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(PostCommentAsync)">Post Comment
                 </MudButton>
+                <MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Color="Color.Primary"
+                               OnClick="@(() => Read ? RemoveBookFromReadAsync() : AddBookAsReadAsync())" Style="margin-left: 8px;" Variant="@(Read ? Variant.Filled : default)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Bookmark" Color="Color.Secondary"
+                               OnClick="@(() => ToBeRead ? RemoveBookFromWantToReadAsync() : AddBookToWantToReadAsync())" Style="margin-left: 8px;" Variant="@(ToBeRead ? Variant.Filled : default)"/>
             </Authorized>
             <NotAuthorized>
                 <MudTextField T="string" Label="Add a comment" Variant="Variant.Outlined" Margin="Margin.Dense"

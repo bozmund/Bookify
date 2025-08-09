@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,11 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 services.AddRefitClient<IBookClient>(new RefitSettings
 {
-    ContentSerializer = new SystemTextJsonContentSerializer(),
+    ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = null, // Use PascalCase
+        PropertyNameCaseInsensitive = true
+    }),
     CollectionFormat = CollectionFormat.Multi
 }).ConfigureHttpClient(x => x.BaseAddress = new Uri(builder.Configuration["BookApiBaseUrl"] ?? "http://localhost:5022"));
 

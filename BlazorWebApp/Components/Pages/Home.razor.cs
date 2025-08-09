@@ -8,7 +8,7 @@ public class HomeBase : ComponentBase
 {
     [Inject] protected IBookClient Client { get; set; } = null!;
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    protected List<BookDto> RecommendedBooks { get; } = [];
+    protected List<BookDto> Books { get; } = [];
     protected string NameOfTheBook { get; set; } = "Harry Potter";
     protected void NavigateToBook(int bookId)
     {
@@ -16,8 +16,8 @@ public class HomeBase : ComponentBase
     }
     protected async Task SearchBook()
     {
-        RecommendedBooks.Clear();
+        Books.Clear();
         var bookDtos = await Client.GetBookByNameAsync(NameOfTheBook);
-        RecommendedBooks.AddRange(bookDtos);
+        Books.AddRange(bookDtos);
     }
 }
