@@ -23,9 +23,7 @@
                                OnClick="@(() => ToBeRead ? RemoveBookFromWantToReadAsync() : AddBookToWantToReadAsync())" Style="margin-left: 8px;" Variant="@(ToBeRead ? Variant.Filled : default)"/>
             </Authorized>
             <NotAuthorized>
-                <MudTextField T="string" Label="Add a comment" Variant="Variant.Outlined" Margin="Margin.Dense"
-                              Style="width: 100%;" Disabled="true"/>
-                <MudText Typo="Typo.caption" Style="color: red;">Please log in to add comments.</MudText>
+                <MudText Typo="Typo.h6" GutterBottom="true">You need to log in to add comments or rate this book.</MudText>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/Account/Login"
                            Style="margin-top: 8px;">
                     Log In

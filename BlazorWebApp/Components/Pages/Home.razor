@@ -29,14 +29,14 @@
             <MudTd DataLabel="Title">@context.OriginalTitle</MudTd>
             <MudTd DataLabel="Author">@context.Authors</MudTd>
             <MudTd DataLabel="Published Date">@context.OriginalPublicationYear.ToString()</MudTd>
-            <MudTd DataLabel="Delete">
-                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() =>
-                                                                                                {
-                                                                                                    Books.Remove(context);
-                                                                                                    StateHasChanged();
-                                                                                                    return Client.DeleteBookAsync(context.Id);
-                                                                                                })"/>
-            </MudTd>
+            @* <MudTd DataLabel="Delete"> *@
+            @*     <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" OnClick="@(() => *@
+            @*                                                                                     { *@
+            @*                                                                                         Books.Remove(context); *@
+            @*                                                                                         StateHasChanged(); *@
+            @*                                                                                         return Client.DeleteBookAsync(context.Id); *@
+            @*                                                                                     })"/> *@
+            @* </MudTd> *@
         </RowTemplate>
     </MudTable>
 }

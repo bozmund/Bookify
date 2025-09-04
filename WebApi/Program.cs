@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Security.Claims;
 using Client.Models.Response;
 using CsvHelper;
 using Microsoft.AspNetCore.Authentication.Cookies;
