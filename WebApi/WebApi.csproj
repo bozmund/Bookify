@@ -7,8 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="books.csv" />
-      <EmbeddedResource Include="books.csv" />
+        <None Update="books.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </None>
+        <EmbeddedResource Include="books.csv"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -26,5 +29,4 @@
     <ItemGroup>
       <ProjectReference Include="..\Client\Client.csproj" />
     </ItemGroup>
-
 </Project>

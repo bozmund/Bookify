@@ -2,6 +2,7 @@ using System.Globalization;
 using Client.Models.Response;
 using CsvHelper;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Models;
@@ -45,17 +46,26 @@ commentsGroup.MapPost("/book", async (Comment comment, BookDbContext db) =>
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<BookDbContext>();
+
     db.Database.Migrate();
 
-    if (!db.Books.Any())
+    var csvPath = Path.Combine(AppContext.BaseDirectory, "books.csv");
+
+    if (!File.Exists(csvPath))
     {
-        using var reader = new StreamReader("books.csv");
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        var books = csv.GetRecords<Book>();
-        db.Books.AddRange(books);
-        db.SaveChanges();
+        throw new FileNotFoundException(
+            $"Required CSV file for seeding books not found at '{csvPath}'. Ensure the file is present before starting the application.",
+            csvPath
+        );
     }
+
+    using var reader = new StreamReader(csvPath);
+    using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+    var books = csv.GetRecords<Book>();
+    db.Books.AddRange(books);
+    db.SaveChanges();
 }
+
 
 app.UseCors("AllowAll");
 // Configure the HTTP request pipeline.
