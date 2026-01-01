@@ -31,9 +31,6 @@ jobs:
 
       - name: Publish
         run: dotnet publish ./WebApi/WebApi.csproj --configuration Release --output ./publish
-
-      - name: Delete dataset file
-        run: rm -f WebApi/books.csv
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
