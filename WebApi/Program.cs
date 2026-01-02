@@ -1,8 +1,8 @@
 using System.Globalization;
 using Client.Models.Response;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Models;
@@ -31,7 +31,9 @@ commentsGroup.MapGet("/{bookId:int}", async (int bookId, BookDbContext db) =>
         .Where(c => c.BookId == bookId)
         .OrderByDescending(c => c.CreatedAt)
         .ToListAsync();
-    return comments.Count == 0 ? Results.NotFound("No comments found for this book.") : Results.Ok(comments.Select(x => new CommentDto(x.UserName, x.Text, x.CreatedAt)));
+    return comments.Count == 0
+        ? Results.NotFound("No comments found for this book.")
+        : Results.Ok(comments.Select(x => new CommentDto(x.UserName, x.Text, x.CreatedAt)));
 });
 
 commentsGroup.MapPost("/book", async (Comment comment, BookDbContext db) =>
@@ -47,23 +49,28 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<BookDbContext>();
 
-    db.Database.Migrate();
-
-    var csvPath = Path.Combine(AppContext.BaseDirectory, "books.csv");
-
-    if (!File.Exists(csvPath))
+    if (!await db.Books.AnyAsync())
     {
-        throw new FileNotFoundException(
-            $"Required CSV file for seeding books not found at '{csvPath}'. Ensure the file is present before starting the application.",
-            csvPath
-        );
-    }
+        db.Database.Migrate();
 
-    using var reader = new StreamReader(csvPath);
-    using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-    var books = csv.GetRecords<Book>();
-    db.Books.AddRange(books);
-    db.SaveChanges();
+        var csvPath = Path.Combine(AppContext.BaseDirectory, "books.csv");
+
+        if (!File.Exists(csvPath))
+        {
+            throw new FileNotFoundException(
+                $"Required CSV file for seeding books not found at '{csvPath}'. Ensure the file is present before starting the application.",
+                csvPath
+            );
+        }
+
+        using var reader = new StreamReader(csvPath);
+        using var csv = new CsvReader(reader,
+            new CsvConfiguration(CultureInfo.InvariantCulture) { MissingFieldFound = null, HeaderValidated = null });
+        var books = csv.GetRecords<Book>();
+
+        db.Books.AddRange(books);
+        db.SaveChanges();
+    }
 }
 
 
