@@ -49,10 +49,20 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<BookDbContext>();
 
-    if (!await db.Books.AnyAsync())
+    var seed = false;
+
+    try
+    {
+        seed = !await db.Books.AnyAsync();
+    }
+    catch
     {
         db.Database.Migrate();
+        seed = true;
+    }
 
+    if (seed)
+    {
         var csvPath = Path.Combine(AppContext.BaseDirectory, "books.csv");
 
         if (!File.Exists(csvPath))
@@ -64,10 +74,16 @@ using (var scope = app.Services.CreateScope())
         }
 
         using var reader = new StreamReader(csvPath);
-        using var csv = new CsvReader(reader,
-            new CsvConfiguration(CultureInfo.InvariantCulture) { MissingFieldFound = null, HeaderValidated = null });
-        var books = csv.GetRecords<Book>();
+        using var csv = new CsvReader(
+            reader,
+            new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                MissingFieldFound = null,
+                HeaderValidated = null
+            }
+        );
 
+        var books = csv.GetRecords<Book>();
         db.Books.AddRange(books);
         db.SaveChanges();
     }
